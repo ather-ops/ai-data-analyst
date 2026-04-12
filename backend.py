@@ -1,61 +1,94 @@
 import pandas as pd
 import numpy as np
 
-def analyze_dataframe(df):
+def analysis(df):
     """
-    Pure backend logic for data analysis
-    Returns: cleaned_df, statistics_dict
+    Main analysis function to fill missing values
+    Automatically converts numeric columns and fills based on type
     """
-    # Store original missing values count
-    missing_before = df.isnull().sum().sum()
+    # First convert all columns to appropriate types
+    for col in df.columns:
+        df[col] = pd.to_numeric(df[col], errors='ignore')
     
-    # Create a copy to avoid modifying original
-    cleaned_df = df.copy()
-    
-    # Analysis function to fill missing values
-    for col in cleaned_df.columns:
-        if cleaned_df[col].dtype in ['int64', 'float64']:
-            # For year columns, use median instead of mean
+    # Fill missing values based on column type
+    for col in df.columns:
+        if df[col].dtype in ['int64', 'float64']:
+            # Agar column 'year' hai, toh mean nahi, median use karo
             if 'year' in col.lower():
-                cleaned_df[col] = cleaned_df[col].fillna(cleaned_df[col].median())
+                median_val = df[col].median()
+                if pd.isna(median_val):
+                    median_val = 0
+                df[col] = df[col].fillna(median_val)
             else:
-                cleaned_df[col] = cleaned_df[col].fillna(cleaned_df[col].mean())
+                mean_val = df[col].mean()
+                if pd.isna(mean_val):
+                    mean_val = 0
+                df[col] = df[col].fillna(mean_val)
         else:
-            cleaned_df[col] = cleaned_df[col].fillna("unknown")
+            df[col] = df[col].fillna("unknown")
     
-    # Calculate missing values after
-    missing_after = cleaned_df.isnull().sum().sum()
-    
-    # Generate statistics for each column
+    return df
+
+def get_statistics(df):
+    """
+    Generate statistics for each column in the dataframe
+    Returns dictionary with column statistics
+    """
     statistics = {}
-    for col in cleaned_df.columns:
-        if cleaned_df[col].dtype in ['int64', 'float64']:
+    
+    for col in df.columns:
+        if df[col].dtype in ['int64', 'float64']:
             # Numeric column statistics
+            stats = df[col].describe()
             statistics[col] = {
                 'type': 'numeric',
-                'count': int(cleaned_df[col].count()),
-                'mean': float(cleaned_df[col].mean()) if not pd.isna(cleaned_df[col].mean()) else 0,
-                'std': float(cleaned_df[col].std()) if not pd.isna(cleaned_df[col].std()) else 0,
-                'min': float(cleaned_df[col].min()) if not pd.isna(cleaned_df[col].min()) else 0,
-                '25%': float(cleaned_df[col].quantile(0.25)) if not pd.isna(cleaned_df[col].quantile(0.25)) else 0,
-                '50%': float(cleaned_df[col].quantile(0.50)) if not pd.isna(cleaned_df[col].quantile(0.50)) else 0,
-                '75%': float(cleaned_df[col].quantile(0.75)) if not pd.isna(cleaned_df[col].quantile(0.75)) else 0,
-                'max': float(cleaned_df[col].max()) if not pd.isna(cleaned_df[col].max()) else 0
+                'count': int(stats['count']),
+                'mean': float(stats['mean']) if not pd.isna(stats['mean']) else 0,
+                'std': float(stats['std']) if not pd.isna(stats['std']) else 0,
+                'min': float(stats['min']) if not pd.isna(stats['min']) else 0,
+                '25%': float(stats['25%']) if not pd.isna(stats['25%']) else 0,
+                '50%': float(stats['50%']) if not pd.isna(stats['50%']) else 0,
+                '75%': float(stats['75%']) if not pd.isna(stats['75%']) else 0,
+                'max': float(stats['max']) if not pd.isna(stats['max']) else 0
             }
         else:
             # Text column statistics
             statistics[col] = {
                 'type': 'text',
-                'count': int(cleaned_df[col].count()),
-                'unique': int(cleaned_df[col].nunique()),
-                'most_common': str(cleaned_df[col].mode().iloc[0]) if len(cleaned_df[col].mode()) > 0 else 'none'
+                'count': int(df[col].count()),
+                'unique': int(df[col].nunique()),
+                'most_common': str(df[col].mode().iloc[0]) if len(df[col].mode()) > 0 else 'none'
             }
     
+    return statistics
+
+def analyze_dataframe(df):
+    """
+    Complete analysis pipeline
+    Returns cleaned dataframe and statistics
+    """
+    # Store original missing count
+    missing_before = df.isnull().sum().sum()
+    
+    # Make a copy to avoid modifying original
+    cleaned_df = df.copy()
+    
+    # Apply analysis to clean the data
+    cleaned_df = analysis(cleaned_df)
+    
+    # Calculate missing after cleaning
+    missing_after = cleaned_df.isnull().sum().sum()
+    
+    # Get statistics for each column
+    statistics = get_statistics(cleaned_df)
+    
+    # Return all results
     return {
         'cleaned_df': cleaned_df,
         'statistics': statistics,
         'missing_before': missing_before,
         'missing_after': missing_after,
         'rows': len(cleaned_df),
-        'columns': len(cleaned_df.columns)
+        'columns': len(cleaned_df.columns),
+        'fixed_values': missing_before - missing_after
     }
