@@ -1,222 +1,295 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,12,20&height=200&section=header&text=AI%20Data%20Analyst&fontSize=55&fontColor=fff&animation=twinkling&fontAlignY=38&desc=Auto%20Data%20Cleaning%20%26%20Statistical%20Insights%20%E2%80%94%20Built%20With%20Streamlit&descAlignY=58&descSize=14" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,12,20&height=220&section=header&text=AI%20Data%20Analyst&fontSize=58&fontColor=fff&animation=twinkling&fontAlignY=38&desc=Upload%20Any%20Dataset%20%E2%80%94%20Get%20Instant%20Cleaning%2C%20Statistics%20%26%20Visualizations&descAlignY=58&descSize=13" width="100%"/>
 
 [![Python](https://img.shields.io/badge/Python-3.10-f97316?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-Framework-06b6d4?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
-[![Pandas](https://img.shields.io/badge/Pandas-Data%20Processing-22c55e?style=for-the-badge&logo=pandas&logoColor=white)]()
-[![Status](https://img.shields.io/badge/Status-Active%20Ready-22c55e?style=for-the-badge&logoColor=white)]()
+[![Streamlit](https://img.shields.io/badge/Streamlit-Frontend-06b6d4?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
+[![Pandas](https://img.shields.io/badge/Pandas-Data%20Engine-22c55e?style=for-the-badge&logo=pandas&logoColor=white)]()
+[![Plotly](https://img.shields.io/badge/Plotly-Visualizations-a855f7?style=for-the-badge&logoColor=white)]()
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-22c55e?style=for-the-badge&logoColor=white)]()
+
+<br/>
+
+**Upload any CSV, Excel, or JSON file. Get automatic data cleaning, statistical analysis, and interactive charts — in seconds.**
 
 </div>
 
 ---
 
-## What is AI Data Analyst?
+## What Problem Does This Solve?
 
-This is a **production-ready data analysis tool** that automatically cleans missing values and generates statistical insights from any dataset.
+Every data analyst spends **60-70% of their time cleaning data** before they can even start analysis. Missing values, wrong data types, inconsistent formats — these problems exist in every real-world dataset.
 
-Instead of manually cleaning data and calculating statistics, this tool gives you the ability to **upload any file** and get **instant insights** with interactive visualizations.
-Upload File (CSV/Excel/JSON)
-↓
-AI detects column data types
-↓
-Auto-fills missing values based on column type
-↓
-Generates statistics for each column
-↓
-Creates interactive visualizations
-↓
-Download cleaned data (CSV/Excel)
+This tool automates that entire process. You upload a file, it handles the rest.
 
-text
-
----
-
-## Data Cleaning Logic
-
-| Column Type | Detection | Filling Method |
-|-------------|-----------|----------------|
-| Numeric (int, float) | dtype detection | Mean value |
-| Year columns | contains 'year' keyword | Median value |
-| Text/Object | string data | "unknown" |
-Raw Data ──► Upload ──► Missing Value Detection
-│
-▼
-┌─────────────────┐
-│ Column Type? │
-└─────────────────┘
-│ │ │
-▼ ▼ ▼
-Numeric Year Text
-│ │ │
-▼ ▼ ▼
-Mean Median "unknown"
-│ │ │
-└───────┴────────┘
-│
-▼
-Cleaned Data ──► Statistics ──► Visualizations
-│
-▼
-Download (CSV/Excel)
-
-text
+```
+Raw messy dataset
+        ↓
+Auto-detect column types
+        ↓
+Smart missing value imputation
+        ↓
+Column-wise statistical breakdown
+        ↓
+Interactive visualizations
+        ↓
+Download cleaned data (CSV or Excel)
+```
 
 ---
 
-## Repository Structure
-AI-Data-Analyst/
-├── app.py ← Streamlit frontend
-├── backend.py ← Core analysis logic
-├── requirements.txt ← Dependencies
-└── README.md ← Documentation
+## Data Cleaning Logic — Smart Imputation
 
-text
+The engine detects the type of each column and applies the most statistically appropriate filling method.
+
+| Column Type | Detection Method | Filling Strategy | Why |
+|-------------|-----------------|-----------------|-----|
+| **Numeric (int/float)** | dtype detection | Mean | Preserves distribution center |
+| **Year columns** | keyword detection (`year`, `yr`) | Median | Avoids decimal years, outlier-robust |
+| **Text / Categorical** | object dtype | `"unknown"` | Preserves category integrity |
+| **Boolean** | bool dtype | Mode | Most common true/false |
+
+### Pipeline Flow
+
+```
+Raw Data
+   │
+   ▼
+Upload (CSV / Excel / JSON)
+   │
+   ▼
+┌──────────────────────────────┐
+│   Missing Value Detection    │
+│   isnull().sum() per column  │
+└──────────────────────────────┘
+   │
+   ▼
+┌──────────────────────────────┐
+│     Column Type Check        │
+│                              │
+│  Numeric → Mean              │
+│  Year    → Median (int)      │
+│  Text    → "unknown"         │
+└──────────────────────────────┘
+   │
+   ▼
+┌──────────────────────────────┐
+│   Statistical Analysis       │
+│   count, mean, std, min,     │
+│   25%, 50%, 75%, max         │
+└──────────────────────────────┘
+   │
+   ▼
+┌──────────────────────────────┐
+│   Interactive Visualizations │
+│   Histogram / Bar / Missing  │
+└──────────────────────────────┘
+   │
+   ▼
+Download Cleaned Dataset
+```
 
 ---
 
 ## Features
 
-### 1. Auto Data Cleaning
-- Detects missing values automatically
-- Fills numeric columns with mean
-- Fills year columns with median (no decimals)
-- Fills text columns with "unknown"
+### 1. Automatic Missing Value Detection
+Detects all missing values across every column before any processing. Shows a visual missing-value chart so you can see the state of your raw data before cleaning begins.
 
-### 2. Statistical Analysis
+### 2. Smart Imputation Engine
+No manual configuration required. The engine reads column names and data types and selects the right strategy automatically.
+
+### 3. Column-Wise Statistical Analysis
 
 **For Numeric Columns:**
 
-| Statistic | Description |
-|-----------|-------------|
-| count | Total non-null values |
-| mean | Average value |
-| std | Standard deviation |
-| min | Minimum value |
-| 25% | First quartile |
-| 50% | Median |
-| 75% | Third quartile |
-| max | Maximum value |
+| Statistic | What It Tells You |
+|-----------|------------------|
+| `count` | How many non-null values exist |
+| `mean` | Average — central tendency |
+| `std` | Spread of values around mean |
+| `min` / `max` | Extreme values — outlier hints |
+| `25%` / `50%` / `75%` | Distribution quartiles |
 
-**For Text Columns:**
+**For Text / Categorical Columns:**
 
-| Statistic | Description |
-|-----------|-------------|
-| count | Total non-null values |
-| unique | Number of unique values |
-| most_common | Most frequent value |
+| Statistic | What It Tells You |
+|-----------|------------------|
+| `count` | How many non-null entries |
+| `unique` | Cardinality — how many distinct values |
+| `most_common` | Dominant category |
 
-### 3. Interactive Visualizations
+### 4. Interactive Visualizations (Plotly)
 
-| Chart Type | Purpose |
-|------------|---------|
-| Histogram | Distribution of numeric data |
-| Bar Chart | Top values in text columns |
-| Missing Values Chart | Visualize missing data before cleaning |
+| Chart | Column Type | Purpose |
+|-------|-------------|---------|
+| Histogram | Numeric | See value distribution and skew |
+| Bar Chart | Categorical | Top N most frequent values |
+| Missing Values Chart | All columns | Before/after cleaning comparison |
 
-### 4. Download Options
-- Export as CSV
-- Export as Excel
+### 5. Download Options
+- Export cleaned data as **CSV**
+- Export cleaned data as **Excel (.xlsx)**
 
 ---
 
-## Sample Output
+## Repository Structure
 
-For a column like 'release_year':
+```
+AI-Data-Analyst/
+├── app.py              ← Streamlit UI — file upload, display, download
+├── backend.py          ← Core logic — cleaning, stats, chart generation
+├── requirements.txt    ← All dependencies
+└── README.md           ← This file
+```
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│           Streamlit UI  (app.py)            │
+│  File Upload → Display → Charts → Download  │
+└─────────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────┐
+│         Backend Engine  (backend.py)        │
+│                                             │
+│  detect_missing()   → isnull analysis       │
+│  identify_type()    → dtype + name check    │
+│  fill_missing()     → mean/median/unknown   │
+│  generate_stats()   → describe() per col    │
+│  generate_charts()  → Plotly figures        │
+└─────────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────┐
+│      Visualization Engine  (Plotly)         │
+│  Histogram  │  Bar Chart  │  Missing Chart  │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## Sample Output — Netflix Dataset
+
+Input: `netflix_titles.csv` — 8,807 rows, 12 columns, 3 columns with missing values
+
+| Column | Missing Before | Method Used | Missing After |
+|--------|---------------|-------------|---------------|
+| `director` | 2,634 | `"unknown"` | 0 |
+| `cast` | 825 | `"unknown"` | 0 |
+| `country` | 831 | `"unknown"` | 0 |
+| `release_year` | 0 | — | 0 |
+
+**Statistics generated for `release_year`:**
 
 | Statistic | Value |
 |-----------|-------|
-| count | 8807.00 |
+| count | 8807 |
 | mean | 2014.18 |
 | std | 8.82 |
-| min | 1925.00 |
-| 25% | 2013.00 |
-| 50% | 2017.00 |
-| 75% | 2019.00 |
-| max | 2021.00 |
+| min | 1925 |
+| 25% | 2013 |
+| 50% | 2017 |
+| 75% | 2019 |
+| max | 2021 |
 
 ---
 
-## Installation
+## Installation and Running Locally
 
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/ai-data-analyst.git
+# 1. Clone the repository
+git clone https://github.com/ather-ops/ai-data-analyst
 cd ai-data-analyst
 
-# Install dependencies
+# 2. Install dependencies
 pip install -r requirements.txt
 
-# Run application
+# 3. Run the app
 streamlit run app.py
-Open browser at: http://localhost:8501
+```
 
-Requirements
-bash
+Open browser at: `http://localhost:8501`
+
+---
+
+## Requirements
+
+```
 streamlit==1.28.1
 pandas==2.0.3
 numpy==1.24.3
 plotly==5.17.0
 openpyxl==3.1.2
 xlrd==2.0.1
-Deployment
-Streamlit Cloud (Free)
-Push code to GitHub
+```
 
-Go to share.streamlit.io
+---
 
-Sign in with GitHub
+## Deploy to Streamlit Cloud (Free)
 
-Select repository and branch
+```
+1. Push code to GitHub
+2. Go to share.streamlit.io
+3. Sign in with GitHub
+4. Select your repository
+5. Set main file: app.py
+6. Click Deploy
+```
 
-Set main file: app.py
+Live URL format: `https://ather-ops-ai-data-analyst.streamlit.app`
 
-Click Deploy
+---
 
-Live URL: https://yourusername-ai-data-analyst.streamlit.app
+## Skills Demonstrated
 
-Skills Demonstrated
-https://img.shields.io/badge/Data%2520Cleaning-Auto%2520Imputation-f97316?style=flat-square
-https://img.shields.io/badge/Statistical%2520Analysis-Column%2520Wise-f97316?style=flat-square
-https://img.shields.io/badge/Streamlit-Full%2520UI-06b6d4?style=flat-square
-https://img.shields.io/badge/Pandas-Data%2520Processing-06b6d4?style=flat-square
-https://img.shields.io/badge/Plotly-Interactive%2520Charts-22c55e?style=flat-square
-https://img.shields.io/badge/File%2520Handling-CSV%252FExcel%252FJSON-22c55e?style=flat-square
+[![Data Cleaning](https://img.shields.io/badge/Data%20Cleaning-Smart%20Imputation-f97316?style=flat-square)]()
+[![Statistical Analysis](https://img.shields.io/badge/Statistical%20Analysis-Column%20Wise-f97316?style=flat-square)]()
+[![Streamlit](https://img.shields.io/badge/Streamlit-Production%20UI-06b6d4?style=flat-square)]()
+[![Pandas](https://img.shields.io/badge/Pandas-Full%20Pipeline-06b6d4?style=flat-square)]()
+[![Plotly](https://img.shields.io/badge/Plotly-Interactive%20Charts-22c55e?style=flat-square)]()
+[![File Handling](https://img.shields.io/badge/File%20Handling-CSV%20Excel%20JSON-22c55e?style=flat-square)]()
+[![Error Handling](https://img.shields.io/badge/Error%20Handling-Production%20Ready-a855f7?style=flat-square)]()
 
-Tech Stack
-text
-┌─────────────────────────────────────────────────────────────┐
-│                    User Interface (Streamlit)               │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Backend Processing (Python/Pandas)             │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │              Data Analysis Pipeline                  │   │
-│  │  ┌────────┐  ┌────────┐  ┌────────┐  ┌──────────┐  │   │
-│  │  │ Detect │→ │ Identify│→ │  Fill  │→ │Generate  │  │   │
-│  │  │Missing │  │ Column  │  │Missing │  │Statistics│  │   │
-│  │  │ Values │  │  Type   │  │ Values │  │          │  │   │
-│  │  └────────┘  └────────┘  └────────┘  └──────────┘  │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Visualization Engine (Plotly)                  │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
-│  │ Histograms  │  │  Bar Charts │  │  Distribution Plots │ │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-Use Cases
-Industry	Application
-Business	Clean sales data, analyze trends
-Research	Prepare datasets for analysis
-Education	Learn data cleaning techniques
-Marketing	Process customer data
+---
+
+## Use Cases
+
+| Domain | Application |
+|--------|-------------|
+| Business Analytics | Clean sales data, customer records, transaction logs |
+| Machine Learning | Prepare raw datasets before model training |
+| Research | Process survey data, experiment results |
+| Education | Learn data cleaning techniques interactively |
+| Marketing | Analyze campaign data and customer segments |
+
+---
+
+## Connection to Larger Projects
+
+This tool directly feeds into the **Cortex-RAG** and **CineSense AI** pipelines:
+
+```
+AI Data Analyst          Cortex-RAG           CineSense AI
+─────────────            ──────────           ────────────
+Clean dataset     →      Embed cleaned   →    Semantic search
+Fill missing vals         data in            on clean vectors
+Generate stats            ChromaDB
+Download CSV
+```
+
+A clean dataset leads to better embeddings. Better embeddings lead to more accurate semantic search. This tool is the first step in that chain.
+
+---
+
 <div align="center">
-https://img.shields.io/badge/GitHub-YourUsername-f97316?style=for-the-badge&logo=github&logoColor=white
-https://img.shields.io/badge/Live%2520App-Streamlit%2520Cloud-f97316?style=for-the-badge&logo=streamlit&logoColor=white
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,12,20&height=100&section=footer" width="100%"/></div> ```
+[![GitHub](https://img.shields.io/badge/GitHub-ather--ops-f97316?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ather-ops)
+[![Live App](https://img.shields.io/badge/Live%20App-Rain%20Predictor-06b6d4?style=for-the-badge&logo=streamlit&logoColor=white)](https://rain-predictor-app.streamlit.app)
+[![Cortex-RAG](https://img.shields.io/badge/Repo-Cortex--RAG-a855f7?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ather-ops/Cortex-RAG)
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,12,20&height=100&section=footer" width="100%"/>
+
+</div>
