@@ -4,7 +4,7 @@ import re
 
 def convert_to_numeric(val):
     """Convert string numbers like 'two hundred' to actual numbers"""
-    if pd.isna(val) or val == "NaN" or val == "unknown":
+    if pd.isna(val) or val == "NaN" or val == "unknown" or val == "":
         return np.nan
     
     if isinstance(val, (int, float)):
@@ -56,36 +56,34 @@ def convert_to_numeric(val):
     
     return np.nan
 
-def clean_column_types(df):
-    """Convert columns to proper types (numeric or text)"""
+def analysis(df):
+    """Fill missing values in dataframe"""
     df = df.copy()
     
     for col in df.columns:
-        # First, convert text numbers to actual numbers
-        df[col] = df[col].apply(convert_to_numeric)
+        # Check if column should be numeric (based on column name or content)
+        numeric_keywords = ['quantity', 'price', 'year', 'id', 'count', 'amount', 'qty']
+        is_numeric_col = any(keyword in col.lower() for keyword in numeric_keywords)
         
-        # Check if column is numeric (more than 50% non-null after conversion)
-        numeric_ratio = df[col].notna().sum() / len(df)
+        # Try to detect if column contains numeric data
+        sample = df[col].dropna().head(10)
+        numeric_ratio = 0
         
-        if numeric_ratio > 0.5:
-            # Column is numeric
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-        else:
-            # Column is text - keep as string
-            df[col] = df[col].fillna("unknown")
-            df[col] = df[col].astype(str)
-            df[col] = df[col].replace("nan", "unknown")
-    
-    return df
-
-def analysis(df):
-    """Fill missing values in dataframe"""
-    # First clean column types (convert text numbers to actual numbers)
-    df = clean_column_types(df)
-    
-    for col in df.columns:
-        if df[col].dtype in ['int64', 'float64']:
-            # Numeric column - fill missing values
+        if len(sample) > 0:
+            # Count how many values can be converted to numbers
+            numeric_count = 0
+            for val in sample:
+                converted = convert_to_numeric(val)
+                if not pd.isna(converted):
+                    numeric_count += 1
+            numeric_ratio = numeric_count / len(sample)
+        
+        # If column name suggests numeric OR more than 50% values are numeric
+        if is_numeric_col or numeric_ratio > 0.5:
+            # Convert to numeric
+            df[col] = df[col].apply(convert_to_numeric)
+            
+            # Fill missing values
             if 'year' in col.lower():
                 median_val = df[col].median()
                 if pd.isna(median_val):
@@ -96,12 +94,17 @@ def analysis(df):
                 if pd.isna(mean_val):
                     mean_val = 0
                 df[col] = df[col].fillna(mean_val)
-                # Convert to int if all values are whole numbers
-                if (df[col] % 1 == 0).all():
-                    df[col] = df[col].astype(int)
+            
+            # Convert to int if all values are whole numbers
+            if df[col].notna().all() and (df[col].dropna() % 1 == 0).all():
+                df[col] = df[col].astype(int)
         else:
-            # Text column - fill with "unknown"
+            # Text column - keep original values, fill missing with "unknown"
+            # Don't convert text to numbers
             df[col] = df[col].fillna("unknown")
+            # Clean up any NaN strings
+            df[col] = df[col].replace("nan", "unknown")
+            df[col] = df[col].replace("NaN", "unknown")
     
     return df
 
@@ -125,17 +128,20 @@ def get_statistics(df):
                     'max': float(stats['max']) if not pd.isna(stats['max']) else 0
                 }
             else:
+                # Text column statistics
+                unique_vals = df[col].nunique()
+                most_common = df[col].mode().iloc[0] if len(df[col].mode()) > 0 else 'none'
                 statistics[col] = {
                     'type': 'text',
-                    'count': int(df[col].count()) if not pd.isna(df[col].count()) else 0,
-                    'unique': int(df[col].nunique()) if not pd.isna(df[col].nunique()) else 0,
-                    'most_common': str(df[col].mode().iloc[0]) if len(df[col].mode()) > 0 else 'none'
+                    'count': int(df[col].count()),
+                    'unique': int(unique_vals),
+                    'most_common': str(most_common)
                 }
-        except:
+        except Exception as e:
             statistics[col] = {
                 'type': 'unknown',
                 'count': 0,
-                'error': 'Could not process this column'
+                'error': str(e)
             }
     
     return statistics
