@@ -8,11 +8,23 @@ def convert_to_numeric(val):
         return np.nan
     
     if isinstance(val, (int, float)):
+        # Don't convert if it's NaN
+        if pd.isna(val):
+            return np.nan
         return val
     
     if isinstance(val, str):
         # Remove extra spaces and lowercase
-        val = val.lower().strip()
+        val = val.strip().lower()
+        
+        # Skip if it's a date format
+        if re.match(r'\d{1,2}[/-]\d{1,2}[/-]\d{2,4}', val):
+            return np.nan
+        
+        # Skip if it looks like a country name or text (contains letters)
+        if re.search(r'[a-zA-Z]', val) and not re.search(r'\d', val):
+            # If it's pure text with no numbers, don't convert
+            return np.nan
         
         # Handle common text numbers
         word_to_num = {
@@ -30,6 +42,7 @@ def convert_to_numeric(val):
         if len(words) > 1:
             total = 0
             current = 0
+            is_number_word = True
             for word in words:
                 if word in word_to_num:
                     num = word_to_num[word]
@@ -41,9 +54,11 @@ def convert_to_numeric(val):
                     else:
                         current += num
                 else:
-                    return np.nan
-            total += current
-            return total
+                    is_number_word = False
+                    break
+            if is_number_word:
+                total += current
+                return total
         
         # Check if it's a single word number
         if val in word_to_num:
@@ -51,7 +66,7 @@ def convert_to_numeric(val):
         
         # Try to extract numbers from string like "123"
         numbers = re.findall(r'\d+', val)
-        if numbers:
+        if numbers and not re.search(r'[a-zA-Z]', val):
             return int(numbers[0])
     
     return np.nan
@@ -60,51 +75,61 @@ def analysis(df):
     """Fill missing values in dataframe"""
     df = df.copy()
     
+    # List of columns that should NEVER be converted to numeric
+    text_columns = ['show_id', 'type', 'title', 'director', 'cast', 'country', 
+                    'date_added', 'rating', 'duration', 'listed_in', 'description']
+    
+    # List of columns that ARE numeric
+    numeric_columns = ['release_year']
+    
     for col in df.columns:
-        # Check if column should be numeric (based on column name or content)
-        numeric_keywords = ['quantity', 'price', 'year', 'id', 'count', 'amount', 'qty']
-        is_numeric_col = any(keyword in col.lower() for keyword in numeric_keywords)
+        # Skip text columns
+        if col in text_columns:
+            df[col] = df[col].fillna("unknown")
+            df[col] = df[col].replace("nan", "unknown")
+            df[col] = df[col].replace("NaN", "unknown")
+            df[col] = df[col].replace("0", "unknown")
+            continue
         
-        # Try to detect if column contains numeric data
-        sample = df[col].dropna().head(10)
-        numeric_ratio = 0
+        # For release_year (numeric)
+        if col in numeric_columns or 'year' in col.lower():
+            # Convert to numeric
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+            # Fill with median
+            median_val = df[col].median()
+            if pd.isna(median_val):
+                median_val = 0
+            df[col] = df[col].fillna(median_val)
+            df[col] = df[col].astype(int)
+            continue
         
-        if len(sample) > 0:
-            # Count how many values can be converted to numbers
-            numeric_count = 0
+        # For other columns - detect if they should be numeric
+        sample = df[col].dropna().head(20)
+        numeric_count = 0
+        total_count = len(sample)
+        
+        if total_count > 0:
             for val in sample:
                 converted = convert_to_numeric(val)
                 if not pd.isna(converted):
                     numeric_count += 1
-            numeric_ratio = numeric_count / len(sample)
-        
-        # If column name suggests numeric OR more than 50% values are numeric
-        if is_numeric_col or numeric_ratio > 0.5:
-            # Convert to numeric
-            df[col] = df[col].apply(convert_to_numeric)
+            numeric_ratio = numeric_count / total_count
             
-            # Fill missing values
-            if 'year' in col.lower():
-                median_val = df[col].median()
-                if pd.isna(median_val):
-                    median_val = 0
-                df[col] = df[col].fillna(median_val)
-            else:
+            # If more than 70% are numeric, treat as numeric column
+            if numeric_ratio > 0.7:
+                df[col] = df[col].apply(convert_to_numeric)
                 mean_val = df[col].mean()
                 if pd.isna(mean_val):
                     mean_val = 0
                 df[col] = df[col].fillna(mean_val)
-            
-            # Convert to int if all values are whole numbers
-            if df[col].notna().all() and (df[col].dropna() % 1 == 0).all():
-                df[col] = df[col].astype(int)
+            else:
+                # Treat as text column
+                df[col] = df[col].fillna("unknown")
+                df[col] = df[col].replace("nan", "unknown")
+                df[col] = df[col].replace("NaN", "unknown")
         else:
-            # Text column - keep original values, fill missing with "unknown"
-            # Don't convert text to numbers
+            # No sample data, treat as text
             df[col] = df[col].fillna("unknown")
-            # Clean up any NaN strings
-            df[col] = df[col].replace("nan", "unknown")
-            df[col] = df[col].replace("NaN", "unknown")
     
     return df
 
