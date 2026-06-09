@@ -8,327 +8,344 @@ import time
 
 # Page configuration
 st.set_page_config(
-    page_title="AI Data Analyst Pro",
-    page_icon="✨",
+    page_title="AI Data Analyst",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS with Glassmorphism and ChatGPT-inspired theme
+# Custom CSS with Liquid Glass effect
 st.markdown("""
     <style>
-    /* Import Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    /* Import */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
-    /* Main container styling */
+    /* Main container */
     .stApp {
-        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        background: radial-gradient(circle at 20% 50%, rgba(10, 20, 40, 0.98), rgba(5, 10, 20, 0.99));
         font-family: 'Inter', sans-serif;
     }
     
-    /* Glassmorphism effect for cards */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 1.5rem;
-        margin: 1rem 0;
-        transition: all 0.3s ease;
+    /* Liquid Glass effect */
+    .glass-panel {
+        background: rgba(20, 30, 45, 0.35);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        border: 1px solid rgba(80, 120, 200, 0.25);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    .glass-card:hover {
-        transform: translateY(-5px);
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    .glass-panel:hover {
+        border-color: rgba(80, 120, 200, 0.5);
+        box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.3);
+        background: rgba(25, 40, 60, 0.45);
     }
     
-    /* Animated gradient header */
-    .main-header {
+    /* Header */
+    .header-container {
         text-align: center;
-        padding: 3rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
-        background-size: 200% 200%;
-        border-radius: 20px;
+        padding: 2.5rem;
+        background: linear-gradient(135deg, rgba(30, 50, 80, 0.4), rgba(20, 35, 60, 0.4));
+        backdrop-filter: blur(12px);
+        border-radius: 28px;
+        border: 1px solid rgba(80, 120, 200, 0.3);
         margin-bottom: 2rem;
-        animation: gradientShift 5s ease infinite;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
     
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    .main-header h1 {
-        color: white;
-        font-size: 3.5rem;
+    .header-container h1 {
+        color: #ffffff;
+        font-size: 2.8rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #ffffff, #a0b8e0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         margin-bottom: 0.5rem;
-        font-weight: 800;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
     
-    .main-header p {
-        color: white;
-        font-size: 1.3rem;
-        opacity: 0.95;
+    .header-container p {
+        color: rgba(180, 200, 240, 0.85);
+        font-size: 1.1rem;
+        font-weight: 400;
     }
     
-    /* Stats boxes with glass effect */
-    .stat-box {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
-        backdrop-filter: blur(10px);
+    /* Stat boxes */
+    .stat-card {
+        background: rgba(25, 35, 55, 0.4);
+        backdrop-filter: blur(8px);
         padding: 1.2rem;
-        border-radius: 15px;
-        color: white;
+        border-radius: 18px;
+        border: 1px solid rgba(80, 120, 200, 0.2);
         text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
+        transition: transform 0.2s ease;
     }
     
-    .stat-box:hover {
-        transform: scale(1.05);
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
-    }
-    
-    /* Button styling with gradient */
-    .stButton button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-        background-size: 200% 200%;
-        color: white;
-        font-weight: bold;
-        font-size: 1rem;
-        padding: 0.75rem;
-        border: none;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        animation: buttonGradient 3s ease infinite;
-    }
-    
-    @keyframes buttonGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    .stButton button:hover {
+    .stat-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        border-color: rgba(80, 120, 200, 0.4);
+        background: rgba(30, 45, 70, 0.5);
     }
     
-    /* Loading animation */
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-    
-    .loading-text {
-        text-align: center;
+    /* Button */
+    .stButton > button {
+        background: linear-gradient(135deg, rgba(40, 70, 120, 0.8), rgba(30, 55, 100, 0.8));
+        backdrop-filter: blur(8px);
         color: white;
-        font-size: 1.2rem;
-        animation: pulse 2s ease-in-out infinite;
+        font-weight: 500;
+        border: 1px solid rgba(80, 120, 200, 0.4);
+        border-radius: 12px;
+        padding: 0.6rem 1.2rem;
+        transition: all 0.2s ease;
     }
     
-    /* Dataframe styling */
-    .dataframe {
-        background: rgba(255, 255, 255, 0.1) !important;
-        backdrop-filter: blur(5px) !important;
-        border-radius: 10px !important;
-        color: white !important;
+    .stButton > button:hover {
+        background: linear-gradient(135deg, rgba(50, 85, 140, 0.9), rgba(40, 70, 120, 0.9));
+        border-color: rgba(100, 150, 230, 0.6);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
     
-    /* Sidebar styling */
-    .css-1d391kg {
-        background: rgba(0, 0, 0, 0.3) !important;
-        backdrop-filter: blur(10px) !important;
-    }
-    
-    /* Metric styling */
+    /* Metrics */
     [data-testid="stMetricValue"] {
         color: white !important;
-        font-size: 2rem !important;
+        font-size: 1.8rem !important;
+        font-weight: 600 !important;
     }
     
     [data-testid="stMetricLabel"] {
-        color: rgba(255, 255, 255, 0.8) !important;
+        color: rgba(180, 200, 240, 0.8) !important;
+        font-size: 0.85rem !important;
     }
     
-    /* Expander styling */
+    /* Dataframe */
+    .dataframe {
+        background: rgba(15, 25, 40, 0.6) !important;
+        backdrop-filter: blur(4px) !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(80, 120, 200, 0.2) !important;
+        color: #e0e8f0 !important;
+    }
+    
+    /* Expander */
     .streamlit-expanderHeader {
-        background: rgba(255, 255, 255, 0.1) !important;
-        backdrop-filter: blur(5px) !important;
+        background: rgba(25, 40, 65, 0.5) !important;
+        backdrop-filter: blur(8px);
+        border-radius: 12px !important;
+        border: 1px solid rgba(80, 120, 200, 0.2);
         color: white !important;
-        border-radius: 10px !important;
+        font-weight: 500;
     }
     
-    /* Info/Warning/Success boxes */
-    .stAlert {
-        background: rgba(255, 255, 255, 0.1) !important;
-        backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        color: white !important;
+    .streamlit-expanderHeader:hover {
+        background: rgba(35, 55, 85, 0.6) !important;
+        border-color: rgba(80, 120, 200, 0.4);
     }
     
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #764ba2, #f093fb);
-    }
-    
-    /* Tabs styling */
+    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 2rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
+        gap: 0.5rem;
+        background: rgba(20, 30, 50, 0.4);
+        backdrop-filter: blur(8px);
+        border-radius: 12px;
         padding: 0.5rem;
     }
     
     .stTabs [data-baseweb="tab"] {
-        color: white;
+        color: rgba(200, 215, 240, 0.8);
         border-radius: 8px;
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 1rem;
+        font-weight: 500;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, rgba(40, 80, 140, 0.8), rgba(30, 65, 120, 0.8));
+        color: white;
     }
     
-    /* Code block styling */
+    /* Alert boxes */
+    .stAlert {
+        background: rgba(25, 40, 65, 0.5) !important;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(80, 120, 200, 0.3) !important;
+        border-radius: 12px !important;
+        color: white !important;
+    }
+    
+    /* Loading animation */
+    .loading-wave {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+    }
+    
+    .loading-wave div {
+        position: absolute;
+        border: 4px solid rgba(80, 120, 200, 0.8);
+        opacity: 1;
+        border-radius: 50%;
+        animation: ripple 1.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+    
+    .loading-wave div:nth-child(2) {
+        animation-delay: -0.5s;
+    }
+    
+    @keyframes ripple {
+        0% { top: 36px; left: 36px; width: 0; height: 0; opacity: 1; }
+        100% { top: 0px; left: 0px; width: 72px; height: 72px; opacity: 0; }
+    }
+    
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background: rgba(10, 20, 35, 0.6);
+        backdrop-filter: blur(12px);
+        border-right: 1px solid rgba(80, 120, 200, 0.2);
+    }
+    
+    /* Code blocks */
     .stCodeBlock {
         background: rgba(0, 0, 0, 0.3) !important;
         border-radius: 10px !important;
     }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(20, 30, 50, 0.5);
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: rgba(80, 120, 200, 0.5);
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(80, 120, 200, 0.7);
+    }
+    
+    /* Dividers */
+    hr {
+        border-color: rgba(80, 120, 200, 0.2);
+        margin: 1.5rem 0;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Animated loading component
-def animated_loading(message="AI is analyzing your data..."):
+# Loading component
+def show_loading():
     loading_placeholder = st.empty()
-    dots = 0
-    for _ in range(30):
-        dots = (dots + 1) % 4
-        loading_placeholder.markdown(f"""
-            <div style="text-align: center; padding: 2rem;">
-                <div class="glass-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🧠</div>
-                    <div class="loading-text">{message}{'.' * dots}</div>
-                    <div style="margin-top: 1rem;">
-                        <div style="width: 100%; height: 2px; background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c); border-radius: 2px; animation: gradientShift 2s ease infinite; background-size: 200% 200%;"></div>
-                    </div>
+    loading_placeholder.markdown("""
+        <div style="text-align: center; padding: 3rem;">
+            <div style="background: rgba(20, 30, 50, 0.5); backdrop-filter: blur(12px); border-radius: 24px; padding: 2rem; border: 1px solid rgba(80, 120, 200, 0.3);">
+                <div class="loading-wave">
+                    <div></div>
+                    <div></div>
                 </div>
+                <p style="color: rgba(200, 215, 240, 0.9); margin-top: 1.5rem; font-size: 1rem;">Processing data</p>
+                <p style="color: rgba(160, 180, 220, 0.6); font-size: 0.85rem; margin-top: 0.5rem;">AI analysis in progress</p>
             </div>
-        """, unsafe_allow_html=True)
-        time.sleep(0.1)
+        </div>
+    """, unsafe_allow_html=True)
+    time.sleep(1.5)
     loading_placeholder.empty()
 
 # Header
 st.markdown("""
-    <div class="main-header">
-        <h1>✨ AI Data Analyst Pro ✨</h1>
-        <p>Your Intelligent Data Companion | Turn Raw Data Into Actionable Insights</p>
-        <p style="font-size: 1rem; margin-top: 1rem;">Powered by Advanced Machine Learning Algorithms</p>
+    <div class="header-container">
+        <h1>AI Data Analyst</h1>
+        <p>Intelligent data processing and analysis platform</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Sidebar with glass effect
+# Sidebar
 with st.sidebar:
     st.markdown("""
-        <div class="glass-card" style="margin-bottom: 1rem;">
-            <h3 style="color: white; margin-bottom: 1rem;">🎯 Advanced Features</h3>
+        <div style="padding: 1rem 0;">
+            <h3 style="color: white; font-weight: 500; margin-bottom: 1rem;">Analysis Suite</h3>
         </div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    - 🔍 **Smart Data Profiling**
-    - 🧹 **Intelligent Data Cleaning**
-    - 📊 **Automated Visualization**
-    - 🤖 **AI-Powered Insights**
-    - 📈 **Predictive Analytics**
-    - 🔄 **Real-time Processing**
+    - Data profiling
+    - Missing value treatment
+    - Statistical analysis
+    - Column insights
+    - Export capabilities
     """)
     
     st.markdown("---")
     
     st.markdown("""
-        <div class="glass-card">
-            <h4 style="color: white;">📁 Supported Formats</h4>
+        <div style="margin-top: 1rem;">
+            <h4 style="color: white; font-weight: 500;">Supported formats</h4>
         </div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    - CSV Files
-    - Excel Files (xlsx, xls)
-    - JSON Files
-    - Parquet Files
+    - CSV
+    - Excel (xlsx, xls)
+    - JSON
+    - Parquet
     """)
     
     st.markdown("---")
     
     st.markdown("""
-        <div class="glass-card">
-            <h4 style="color: white;">⚙️ Processing Pipeline</h4>
+        <div style="margin-top: 1rem;">
+            <h4 style="color: white; font-weight: 500;">Processing pipeline</h4>
         </div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    1. **Upload** your file
-    2. **Analyze** data structure
-    3. **Clean** missing values
-    4. **Generate** statistics
-    5. **Visualize** insights
-    6. **Export** results
+    1. File validation
+    2. Structure analysis
+    3. Missing data detection
+    4. Automated cleaning
+    5. Statistical computation
+    6. Results export
     """)
     
     st.markdown("---")
     
     st.markdown("""
-        <div class="glass-card">
-            <h4 style="color: white;">🎨 Smart Cleaning Rules</h4>
+        <div style="margin-top: 1rem;">
+            <h4 style="color: white; font-weight: 500;">Cleaning rules</h4>
         </div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    - **Numeric**: Mean/Median imputation
-    - **Categorical**: Mode imputation
-    - **DateTime**: Forward fill
-    - **Text**: Smart default values
-    - **Outlier**: IQR detection
+    - Numeric columns: mean imputation
+    - Temporal data: median fill
+    - Categorical: mode replacement
+    - Text fields: standard values
     """)
 
-# File upload section
+# File upload
 st.markdown("""
-    <div class="glass-card">
-        <h2 style="color: white; margin-bottom: 1rem;">📤 Upload Your Data File</h2>
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="color: white; font-weight: 500; margin-bottom: 1rem;">Data source</h3>
     </div>
 """, unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader(
-    "Choose a file",
+    "Select file",
     type=['csv', 'xlsx', 'xls', 'json', 'parquet'],
-    help="Supported formats: CSV, Excel, JSON, Parquet"
+    help="CSV, Excel, JSON, or Parquet format"
 )
 
 if uploaded_file is not None:
-    # Read file based on extension
+    # Read file
     file_extension = uploaded_file.name.split('.')[-1].lower()
     
-    with st.spinner('📂 Reading file...'):
+    with st.spinner('Loading file...'):
         if file_extension == 'csv':
             df = pd.read_csv(uploaded_file)
         elif file_extension in ['xlsx', 'xls']:
@@ -338,82 +355,76 @@ if uploaded_file is not None:
         elif file_extension == 'parquet':
             df = pd.read_parquet(uploaded_file)
         else:
-            st.error("Unsupported file format")
+            st.error("Unsupported format")
             st.stop()
     
-    # Display basic info in glass cards
+    # File information
     st.markdown("""
-        <div class="glass-card">
-            <h2 style="color: white; margin-bottom: 1rem;">📊 File Information</h2>
+        <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h3 style="color: white; font-weight: 500; margin-bottom: 1rem;">Dataset overview</h3>
         </div>
     """, unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.markdown('<div class="stat-box">', unsafe_allow_html=True)
-        st.metric("Total Rows", f"{len(df):,}", delta=None)
+        st.markdown('<div class="stat-card">', unsafe_allow_html=True)
+        st.metric("Rows", f"{len(df):,}")
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
-        st.markdown('<div class="stat-box">', unsafe_allow_html=True)
-        st.metric("Total Columns", len(df.columns), delta=None)
+        st.markdown('<div class="stat-card">', unsafe_allow_html=True)
+        st.metric("Columns", len(df.columns))
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col3:
-        st.markdown('<div class="stat-box">', unsafe_allow_html=True)
+        st.markdown('<div class="stat-card">', unsafe_allow_html=True)
         missing_count = df.isnull().sum().sum()
-        st.metric("Missing Values", f"{missing_count:,}", delta=None)
+        st.metric("Missing values", f"{missing_count:,}")
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col4:
-        st.markdown('<div class="stat-box">', unsafe_allow_html=True)
-        st.metric("Data Types", len(df.dtypes.unique()), delta=None)
+        st.markdown('<div class="stat-card">', unsafe_allow_html=True)
+        st.metric("Data types", len(df.dtypes.unique()))
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # Data quality metrics
-    st.markdown("""
-        <div class="glass-card">
-            <h3 style="color: white;">📈 Data Quality Overview</h3>
-        </div>
-    """, unsafe_allow_html=True)
+    # Quality metrics
+    completeness = ((len(df) - missing_count) / (len(df) * len(df.columns))) * 100
+    duplicates = df.duplicated().sum()
+    memory_mb = df.memory_usage(deep=True).sum() / 1024**2
     
-    quality_col1, quality_col2, quality_col3 = st.columns(3)
-    with quality_col1:
-        completeness = ((len(df) - missing_count) / (len(df) * len(df.columns))) * 100
-        st.metric("Data Completeness", f"{completeness:.1f}%")
-    with quality_col2:
-        duplicate_count = df.duplicated().sum()
-        st.metric("Duplicate Rows", f"{duplicate_count:,}")
-    with quality_col3:
-        memory_usage = df.memory_usage(deep=True).sum() / 1024**2
-        st.metric("Memory Usage", f"{memory_usage:.2f} MB")
+    qual_col1, qual_col2, qual_col3 = st.columns(3)
+    with qual_col1:
+        st.metric("Data completeness", f"{completeness:.1f}%")
+    with qual_col2:
+        st.metric("Duplicate rows", f"{duplicates:,}")
+    with qual_col3:
+        st.metric("Memory usage", f"{memory_mb:.2f} MB")
     
-    # Show missing values before cleaning
-    missing_before_df = pd.DataFrame({
+    # Missing values report
+    missing_df = pd.DataFrame({
         'Column': df.columns,
-        'Data Type': df.dtypes.values,
-        'Missing Values': df.isnull().sum().values,
-        'Missing Percentage': (df.isnull().sum().values / len(df)) * 100
+        'Type': df.dtypes.values,
+        'Missing': df.isnull().sum().values,
+        'Percentage': (df.isnull().sum().values / len(df)) * 100
     })
-    missing_before_df = missing_before_df[missing_before_df['Missing Values'] > 0]
+    missing_df = missing_df[missing_df['Missing'] > 0]
     
-    if not missing_before_df.empty:
+    if not missing_df.empty:
         st.markdown("""
-            <div class="glass-card">
-                <h3 style="color: white;">⚠️ Missing Values Detected</h3>
+            <div class="glass-panel" style="padding: 1.5rem; margin: 1rem 0;">
+                <h4 style="color: white; font-weight: 500;">Missing values detected</h4>
             </div>
         """, unsafe_allow_html=True)
-        st.dataframe(missing_before_df, use_container_width=True)
+        st.dataframe(missing_df, use_container_width=True)
         
-        # Create interactive bar chart for missing values
         fig = px.bar(
-            missing_before_df,
+            missing_df,
             x='Column',
-            y='Missing Values',
-            title='Missing Values by Column',
-            color='Missing Values',
-            color_continuous_scale='Viridis',
+            y='Missing',
+            title='Missing values by column',
+            color='Missing',
+            color_continuous_scale='Blues',
             template='plotly_dark'
         )
         fig.update_layout(
@@ -423,75 +434,45 @@ if uploaded_file is not None:
         )
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.success("🎉 No missing values found in your data! Your dataset is clean!")
+        st.success("No missing values found")
     
-    # Show data preview with tabs
-    st.markdown("""
-        <div class="glass-card">
-            <h3 style="color: white;">🔍 Data Preview</h3>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    tab1, tab2, tab3 = st.tabs(["📋 Data Sample", "📊 Statistical Summary", "🔢 Data Types"])
-    
-    with tab1:
+    # Data preview
+    with st.expander("View data sample"):
         st.dataframe(df.head(20), use_container_width=True)
     
-    with tab2:
-        st.dataframe(df.describe(), use_container_width=True)
-    
-    with tab3:
-        dtype_df = pd.DataFrame({
-            'Column Name': df.columns,
-            'Data Type': df.dtypes.astype(str),
-            'Unique Values': [df[col].nunique() for col in df.columns]
-        })
-        st.dataframe(dtype_df, use_container_width=True)
-    
-    # Analyze button
+    # Analysis button
     st.markdown("---")
-    
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        analyze_button = st.button("🚀 Start AI Analysis", use_container_width=True)
+        analyze = st.button("Run analysis", use_container_width=True)
     
-    if analyze_button:
-        # Animated loading
-        animated_loading("AI is analyzing your data...")
+    if analyze:
+        show_loading()
         
-        with st.spinner('🔄 Processing data...'):
-            # Call backend analysis function
+        with st.spinner('Processing...'):
             result = analyze_dataframe(df)
-            
             cleaned_df = result['cleaned_df']
             statistics = result['statistics']
             
-            # Show success message with confetti effect
-            st.balloons()
-            st.success(f"✨ Analysis Complete! Successfully fixed {result['missing_before'] - result['missing_after']:,} missing values ✨")
+            st.success(f"Analysis complete | Fixed {result['missing_before'] - result['missing_after']:,} missing values")
             
-            # Create tabs for different analysis views
-            analysis_tab1, analysis_tab2, analysis_tab3, analysis_tab4 = st.tabs([
-                "📊 Column Statistics", 
-                "📈 Visualizations", 
-                "🧹 Cleaned Data",
-                "💾 Export Options"
+            # Results tabs
+            tab_stats, tab_viz, tab_clean, tab_export = st.tabs([
+                "Statistics", "Visualizations", "Cleaned data", "Export"
             ])
             
-            with analysis_tab1:
+            with tab_stats:
                 st.markdown("""
-                    <div class="glass-card">
-                        <h4 style="color: white;">Detailed Column Analysis</h4>
+                    <div class="glass-panel" style="padding: 1rem; margin-bottom: 1rem;">
+                        <h4 style="color: white;">Column analysis</h4>
                     </div>
                 """, unsafe_allow_html=True)
                 
-                # Create statistics display for each column
                 for col_name, stats in statistics.items():
-                    with st.expander(f"📊 Column: {col_name} (Type: {stats['type']})"):
+                    with st.expander(f"{col_name} ({stats['type']})"):
                         if stats['type'] == 'numeric':
-                            # Create statistics dataframe for numeric column
-                            stats_df = pd.DataFrame({
-                                'Statistic': ['Count', 'Mean', 'Std Dev', 'Min', '25%', 'Median', '75%', 'Max', 'Range'],
+                            stats_table = pd.DataFrame({
+                                'Metric': ['Count', 'Mean', 'Std Dev', 'Min', 'Q1', 'Median', 'Q3', 'Max'],
                                 'Value': [
                                     f"{stats['count']:,}",
                                     f"{stats['mean']:.2f}",
@@ -500,284 +481,138 @@ if uploaded_file is not None:
                                     f"{stats['25%']:.2f}",
                                     f"{stats['50%']:.2f}",
                                     f"{stats['75%']:.2f}",
-                                    f"{stats['max']:.2f}",
-                                    f"{stats['max'] - stats['min']:.2f}"
+                                    f"{stats['max']:.2f}"
                                 ]
                             })
-                            st.dataframe(stats_df, use_container_width=True)
-                            
-                            # Create histogram
-                            fig = px.histogram(
-                                cleaned_df,
-                                x=col_name,
-                                title=f"Distribution of {col_name}",
-                                color_discrete_sequence=['#667eea'],
-                                template='plotly_dark',
-                                nbins=30
-                            )
-                            fig.update_layout(
-                                plot_bgcolor='rgba(0,0,0,0)',
-                                paper_bgcolor='rgba(0,0,0,0)',
-                                font_color='white'
-                            )
-                            st.plotly_chart(fig, use_container_width=True)
-                            
-                            # Box plot for outlier detection
-                            fig_box = px.box(
-                                cleaned_df,
-                                y=col_name,
-                                title=f"Box Plot of {col_name} (Outlier Detection)",
-                                color_discrete_sequence=['#764ba2'],
-                                template='plotly_dark'
-                            )
-                            fig_box.update_layout(
-                                plot_bgcolor='rgba(0,0,0,0)',
-                                paper_bgcolor='rgba(0,0,0,0)',
-                                font_color='white'
-                            )
-                            st.plotly_chart(fig_box, use_container_width=True)
+                            st.dataframe(stats_table, use_container_width=True)
                         else:
-                            # Create statistics dataframe for text column
-                            stats_df = pd.DataFrame({
-                                'Statistic': ['Count', 'Unique Values', 'Most Common'],
+                            stats_table = pd.DataFrame({
+                                'Metric': ['Count', 'Unique values', 'Most common'],
                                 'Value': [
                                     f"{stats['count']:,}",
                                     f"{stats['unique']:,}",
                                     stats['most_common']
                                 ]
                             })
-                            st.dataframe(stats_df, use_container_width=True)
-                            
-                            # Show top values for text column
-                            top_values = cleaned_df[col_name].value_counts().head(10)
-                            if len(top_values) > 0:
-                                fig = px.bar(
-                                    x=top_values.values,
-                                    y=top_values.index,
-                                    orientation='h',
-                                    title=f"Top 10 Values in {col_name}",
-                                    color=top_values.values,
-                                    color_continuous_scale='Viridis',
-                                    template='plotly_dark'
-                                )
-                                fig.update_layout(
-                                    xaxis_title="Count",
-                                    yaxis_title="Value",
-                                    plot_bgcolor='rgba(0,0,0,0)',
-                                    paper_bgcolor='rgba(0,0,0,0)',
-                                    font_color='white'
-                                )
-                                st.plotly_chart(fig, use_container_width=True)
+                            st.dataframe(stats_table, use_container_width=True)
             
-            with analysis_tab2:
+            with tab_viz:
                 st.markdown("""
-                    <div class="glass-card">
-                        <h4 style="color: white;">Interactive Visualizations</h4>
+                    <div class="glass-panel" style="padding: 1rem; margin-bottom: 1rem;">
+                        <h4 style="color: white;">Data visualizations</h4>
                     </div>
                 """, unsafe_allow_html=True)
                 
-                # Correlation heatmap for numeric columns
                 numeric_cols = cleaned_df.select_dtypes(include=['number']).columns
-                if len(numeric_cols) > 1:
-                    st.subheader("Correlation Heatmap")
-                    corr_matrix = cleaned_df[numeric_cols].corr()
-                    fig_corr = go.Figure(data=go.Heatmap(
-                        z=corr_matrix,
-                        x=corr_matrix.columns,
-                        y=corr_matrix.columns,
-                        colorscale='Viridis',
-                        text=corr_matrix.round(2).values,
-                        texttemplate='%{text}',
-                        textfont={"size": 10, "color": "white"}
-                    ))
-                    fig_corr.update_layout(
-                        title="Feature Correlation Matrix",
-                        plot_bgcolor='rgba(0,0,0,0)',
-                        paper_bgcolor='rgba(0,0,0,0)',
-                        font_color='white'
-                    )
-                    st.plotly_chart(fig_corr, use_container_width=True)
                 
-                # Pairplot for first few numeric columns
-                if len(numeric_cols) >= 2 and len(numeric_cols) <= 5:
-                    st.subheader("Scatter Plot Matrix")
-                    fig_matrix = px.scatter_matrix(
-                        cleaned_df[numeric_cols[:4]],
-                        title="Pairwise Relationships",
-                        template='plotly_dark'
-                    )
-                    fig_matrix.update_layout(
-                        plot_bgcolor='rgba(0,0,0,0)',
-                        paper_bgcolor='rgba(0,0,0,0)',
-                        font_color='white'
-                    )
-                    st.plotly_chart(fig_matrix, use_container_width=True)
-                
-                # Data completeness gauge
-                st.subheader("Data Quality Dashboard")
-                completeness_score = completeness
-                fig_gauge = go.Figure(go.Indicator(
-                    mode = "gauge+number",
-                    value = completeness_score,
-                    title = {'text': "Data Completeness Score", 'font': {'color': 'white'}},
-                    domain = {'x': [0, 1], 'y': [0, 1]},
-                    gauge = {
-                        'axis': {'range': [None, 100], 'tickcolor': "white"},
-                        'bar': {'color': "#667eea"},
-                        'steps': [
-                            {'range': [0, 50], 'color': "rgba(255, 85, 85, 0.3)"},
-                            {'range': [50, 75], 'color': "rgba(255, 193, 7, 0.3)"},
-                            {'range': [75, 100], 'color': "rgba(40, 167, 69, 0.3)"}
-                        ],
-                        'threshold': {
-                            'line': {'color': "white", 'width': 4},
-                            'thickness': 0.75,
-                            'value': 90
-                        }
-                    }
-                ))
-                fig_gauge.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font_color='white'
-                )
-                st.plotly_chart(fig_gauge, use_container_width=True)
+                if len(numeric_cols) > 0:
+                    # Distributions
+                    for col in numeric_cols[:3]:
+                        fig = px.histogram(
+                            cleaned_df,
+                            x=col,
+                            title=f"{col} distribution",
+                            nbins=30,
+                            template='plotly_dark',
+                            color_discrete_sequence=['#3b82f6']
+                        )
+                        fig.update_layout(
+                            plot_bgcolor='rgba(0,0,0,0)',
+                            paper_bgcolor='rgba(0,0,0,0)',
+                            font_color='white'
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Correlation matrix
+                    if len(numeric_cols) > 1:
+                        corr = cleaned_df[numeric_cols].corr()
+                        fig_corr = go.Figure(data=go.Heatmap(
+                            z=corr,
+                            x=corr.columns,
+                            y=corr.columns,
+                            colorscale='Blues',
+                            text=corr.round(2),
+                            texttemplate='%{text}'
+                        ))
+                        fig_corr.update_layout(
+                            title='Correlation matrix',
+                            plot_bgcolor='rgba(0,0,0,0)',
+                            paper_bgcolor='rgba(0,0,0,0)',
+                            font_color='white'
+                        )
+                        st.plotly_chart(fig_corr, use_container_width=True)
             
-            with analysis_tab3:
+            with tab_clean:
                 st.markdown("""
-                    <div class="glass-card">
-                        <h4 style="color: white;">Cleaned Data Preview</h4>
+                    <div class="glass-panel" style="padding: 1rem; margin-bottom: 1rem;">
+                        <h4 style="color: white;">Cleaned dataset</h4>
                     </div>
                 """, unsafe_allow_html=True)
                 st.dataframe(cleaned_df.head(20), use_container_width=True)
-                
-                # Show data shape after cleaning
-                st.markdown(f"**Data Shape:** {cleaned_df.shape[0]} rows × {cleaned_df.shape[1]} columns")
+                st.caption(f"Shape: {cleaned_df.shape[0]} rows, {cleaned_df.shape[1]} columns")
             
-            with analysis_tab4:
+            with tab_export:
                 st.markdown("""
-                    <div class="glass-card">
-                        <h4 style="color: white;">Download Cleaned Data</h4>
+                    <div class="glass-panel" style="padding: 1rem; margin-bottom: 1rem;">
+                        <h4 style="color: white;">Export options</h4>
                     </div>
                 """, unsafe_allow_html=True)
                 
-                export_col1, export_col2 = st.columns(2)
+                col_a, col_b = st.columns(2)
                 
-                with export_col1:
-                    # Download as CSV
+                with col_a:
                     csv_data = cleaned_df.to_csv(index=False)
                     st.download_button(
-                        label="📥 Download as CSV",
+                        label="CSV format",
                         data=csv_data,
                         file_name="cleaned_data.csv",
                         mime="text/csv",
                         use_container_width=True
                     )
                 
-                with export_col2:
-                    # Download as Excel
+                with col_b:
                     output = io.BytesIO()
                     with pd.ExcelWriter(output, engine='openpyxl') as writer:
                         cleaned_df.to_excel(writer, sheet_name='Cleaned Data', index=False)
-                    excel_data = output.getvalue()
                     st.download_button(
-                        label="📥 Download as Excel",
-                        data=excel_data,
+                        label="Excel format",
+                        data=output.getvalue(),
                         file_name="cleaned_data.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         use_container_width=True
                     )
-                
-                # Download as JSON
-                json_data = cleaned_df.to_json(orient='records', indent=2)
-                st.download_button(
-                    label="📥 Download as JSON",
-                    data=json_data,
-                    file_name="cleaned_data.json",
-                    mime="application/json",
-                    use_container_width=True
-                )
             
-            # Summary statistics
+            # Summary
             st.markdown("""
-                <div class="glass-card">
-                    <h4 style="color: white;">📋 Analysis Summary Report</h4>
+                <div class="glass-panel" style="padding: 1rem; margin-top: 1rem;">
+                    <h4 style="color: white;">Analysis summary</h4>
                 </div>
             """, unsafe_allow_html=True)
             
-            summary_df = pd.DataFrame({
-                'Metric': [
-                    'Total Rows', 
-                    'Total Columns', 
-                    'Missing Values (Before)', 
-                    'Missing Values (After)', 
-                    'Values Fixed',
-                    'Data Completeness',
-                    'Duplicate Rows'
-                ],
+            summary_data = pd.DataFrame({
+                'Metric': ['Total rows', 'Total columns', 'Missing before', 'Missing after', 'Values fixed'],
                 'Value': [
                     f"{result['rows']:,}",
                     f"{result['columns']:,}",
                     f"{result['missing_before']:,}",
                     f"{result['missing_after']:,}",
-                    f"{result['missing_before'] - result['missing_after']:,}",
-                    f"{completeness:.1f}%",
-                    f"{duplicate_count:,}"
+                    f"{result['missing_before'] - result['missing_after']:,}"
                 ]
             })
-            st.dataframe(summary_df, use_container_width=True)
-            
-            # AI Insights
-            st.markdown("""
-                <div class="glass-card">
-                    <h4 style="color: white;">🤖 AI-Generated Insights</h4>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            insights = []
-            if len(numeric_cols) > 0:
-                insights.append(f"• 📊 Your dataset contains {len(numeric_cols)} numeric columns suitable for statistical analysis")
-            if missing_count > 0:
-                insights.append(f"• 🔍 Successfully cleaned {missing_count:,} missing values from your dataset")
-            if duplicate_count > 0:
-                insights.append(f"• 🔄 Found and can remove {duplicate_count:,} duplicate rows for better data quality")
-            if completeness_score < 80:
-                insights.append("• ⚠️ Data completeness is below 80%. Consider collecting more data for better insights")
-            else:
-                insights.append("• ✅ Excellent data quality! Your dataset has high completeness")
-            
-            for insight in insights:
-                st.markdown(insight)
+            st.dataframe(summary_data, use_container_width=True)
 
 else:
-    # Show info when no file uploaded
     st.markdown("""
-        <div class="glass-card" style="text-align: center;">
-            <h3 style="color: white;">🚀 Ready to Analyze Your Data?</h3>
-            <p style="color: white; margin-top: 1rem;">Upload a CSV, Excel, JSON, or Parquet file to begin your AI-powered data analysis journey</p>
-            <p style="color: rgba(255,255,255,0.7); margin-top: 1rem;">💡 Pro tip: Try our intelligent data cleaning and visualization features</p>
+        <div class="glass-panel" style="padding: 2rem; text-align: center;">
+            <p style="color: rgba(200, 215, 240, 0.8); font-size: 1rem;">Upload a CSV, Excel, JSON, or Parquet file to begin analysis</p>
+            <p style="color: rgba(160, 180, 220, 0.5); font-size: 0.85rem; margin-top: 0.5rem;">The system will automatically detect data types and suggest cleaning strategies</p>
         </div>
     """, unsafe_allow_html=True)
-    
-    # Sample data option
-    st.markdown("---")
-    st.markdown("""
-        <div class="glass-card">
-            <h4 style="color: white;">📝 Try with Sample Data</h4>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    sample_file = st.file_uploader("Upload a sample file to get started", type=['csv'], key="sample")
-    if sample_file is not None:
-        st.rerun()
 
 # Footer
 st.markdown("---")
 st.markdown("""
-    <div style="text-align: center; padding: 2rem;">
-        <p style="color: rgba(255,255,255,0.7);">
-            ✨ AI Data Analyst Pro | Powered by Streamlit, Pandas, Plotly & Advanced ML ✨<br>
-            🚀 Real-time Analysis | Smart Data Cleaning | Interactive Visualizations 🚀
-        </p>
+    <div style="text-align: center; padding: 1rem;">
+        <p style="color: rgba(160, 180, 220, 0.5); font-size: 0.8rem;">AI Data Analyst | Automated processing pipeline</p>
     </div>
 """, unsafe_allow_html=True)
